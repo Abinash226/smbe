@@ -2,8 +2,9 @@ services:
   - type: web
     name: smbe
     env: docker
-    buildCommand: "./mvnw clean package"
+    buildCommand: "mvn clean package"
     startCommand: "java -jar target/*.jar"
     envVars:
       - key: SPRING_PROFILES_ACTIVE
         value: prod
+    buildDir: .
