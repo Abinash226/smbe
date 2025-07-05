@@ -2,7 +2,6 @@
 package com.ab.smbe.service;
 
 import com.ab.smbe.dto.Contact;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
@@ -38,9 +37,36 @@ public class ContactService {
             ));
 
             emailSender.send(message);
+            sendAckEmail(contact);
             return "Email sent successfully";
         } catch (Exception e) {
             return "Failed to send email: " + e.getMessage();
+        }
+    }
+
+    public void sendAckEmail(Contact contact) {
+        try {
+            SimpleMailMessage message = new SimpleMailMessage();
+            message.setTo(contact.email());
+            message.setSubject("Thank you for contacting us!");
+            message.setText("""
+            Dear %s,
+            
+            Thank you for reaching out to us. We have received your message and appreciate you taking the time to contact us.
+            
+            Our team will review your message and get back to you as soon as possible. We typically respond within 1-2 business days.
+            
+            If you have any urgent concerns, please don't hesitate to call our customer service team.
+            
+            Best regards,
+            The Support Team
+            """.formatted(
+                    contact.name()
+            ));
+
+
+            emailSender.send(message);
+        } catch (Exception e) {
         }
     }
 }
